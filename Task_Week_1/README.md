@@ -1,5 +1,7 @@
 # TASK WEEK 1
 
+LINK REPORT VIDEO : https://drive.google.com/file/d/1oLD5BGkYwtQH9huRZTFTdS2EAG61W5tx/view?usp=sharing
+
 Sebelum mengerjakan tugas, mohon persiapkan :
 
 - Akun Github dan buat repository dengan judul "devops21-dumbways-\<nama kalian\>"
