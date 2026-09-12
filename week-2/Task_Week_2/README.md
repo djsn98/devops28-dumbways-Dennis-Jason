@@ -1,5 +1,8 @@
 # Task Week 2 — Docker, Jenkins & Gitlab CI/CD
 
+LINK REPORT VIDEO :
+https://drive.google.com/file/d/1MXCbD1fI5EkUQVr_W5VPGTDDvXgiIgQM/view?usp=sharing
+
 Dokumentasi pengerjaan tugas deployment aplikasi (Wayshub Frontend & Backend) menggunakan Docker, Jenkins, dan Gitlab/GitHub Actions.
 
 ## Docker
@@ -23,41 +26,23 @@ Dokumentasi pengerjaan tugas deployment aplikasi (Wayshub Frontend & Backend) me
 ![Screenshot langkah](images/image48.png)
 
 - Deploy aplikasi Web Server, Frontend, Backend, serta Database on top docker compose
-
 - Ketentuan pengerjaan:
-
 - Deploy database di server terpisah (Menggunak)
-
 - Server Backend terpisah
-
 - Server Frontend terpisah
-
 - Web Server juga terpisah untuk reverse proxy kalian nantinya.
-
 - Untuk penamaan image, sesuaikan dengan environment masing masing, ex: mentor/dumbflx-frontend:production
-
 - Di dalam docker-compose file buat suatu custom network dengan nama team kalian, lalu pasang ke setiap service yang kalian miliki.
-
 - Deploy database terlebih dahulu menggunakan mysql dan jangan lupa untuk pasang volume di bagian database.
-
 - Untuk building image frontend dan backend sebisa mungkin buat dockerized dengan image sekecil mungkin(gunakan multistage build). dan jangan lupa untuk sesuaikan configuration dari backend ke database maupun frontend ke backend sebelum di build menjadi docker images.
-
 - Untuk Web Server buatlah configurasi reverse-proxy menggunakan nginx on top docker.
-
 - SSL CLOUDFLARE OFF!!!
-
 - Gunakan docker volume untuk membuat reverse proxy
-
 - SSL gunakan wildcard
-
 - Untuk DNS bisa sesuaikan seperti contoh di bawah ini
-
 - Frontend: [mentor.studentdumbways.my.id](http://team1.studentdumbways.my.id/)
-
 - Backend: [api.mentor.studentdumbways.my.id](http://api.team1.studentdumbways.my.id/)
-
 - Push image ke docker registry kalian masing-masing.
-
 - Aplikasi dapat berjalan dengan sesuai seperti melakukan login/register.
 
 ### Tahap 1: Deploy backend dan database
@@ -295,9 +280,7 @@ Dokumentasi pengerjaan tugas deployment aplikasi (Wayshub Frontend & Backend) me
 ![Screenshot langkah](images/image45.png)
 
 - Reverse Proxy Jenkins
-
 - gunakan domain ex. [jenkins.mentor.studentdumbways.my.id](http://jenkins.team1.studentdumbways.my.id/)
-
 - reverse proxy sesuaikan dengan ketentuan yang ada di dalam Jenkins documentation
 
 **Langkah 1:** Tambahkan konfigurasi pada file reverse proxy pada jenkins yang berjalan di docker
@@ -313,21 +296,13 @@ Dokumentasi pengerjaan tugas deployment aplikasi (Wayshub Frontend & Backend) me
 ![Screenshot langkah](images/image65.png)
 
 - Buatlah beberapa Job untuk aplikasi kalian yang telah kalian deploy di task sebelumnya (frontend && backend)
-
 - Untuk script CICD atur flow pengupdate an aplikasi se freestyle kalian dan harus mencangkup
-
 - Pull dari repository
-
 - Dockerize/Build aplikasi kita
-
 - Test application
-
 - Push ke Docker Hub
-
 - Deploy aplikasi on top Docker
-
 - Auto trigger setiap ada perubahan di SCM
-
 - Buat job notification ke discord
 
 ### Tahap 1: Siapkan Jenkinsfile
@@ -439,23 +414,14 @@ Dokumentasi pengerjaan tugas deployment aplikasi (Wayshub Frontend & Backend) me
 ## Gitlab
 
 - Implementasikan penggunaan Gitlab Runner pada aplikasi Frontend Kalian
-
 - Buatlah beberapa Job untuk aplikasi kalian yang telah kalian deploy di task sebelumnya (frontend && backend)
-
 - Untuk script CICD atur flow pengupdate an aplikasi se freestyle kalian dan harus mencangkup
-
 - Pull dari repository
-
 - Dockerize/Build aplikasi kita
-
 - Test application
-
 - Push ke Docker Hub
-
 - Deploy aplikasi on top Docker
-
 - Auto trigger setiap ada perubahan di SCM
-
 - Buat job notification ke discord
 
 **Langkah 1:** Ke repo wayshub frontend lalu klik tab "Actions"
@@ -519,3 +485,4 @@ Dokumentasi pengerjaan tugas deployment aplikasi (Wayshub Frontend & Backend) me
 **Langkah 10:** Pastikan juga mengirim notifikasi ke discord
 
 ![Screenshot langkah](images/image7.png)
+
