@@ -1,0 +1,61 @@
+---
+- name: Task 5 - Setup Certbot & SSL Wildcard
+  hosts: vm-debian12-01
+  become: yes
+  tasks:
+    - name: Update apt & install snapd
+      ansible.builtin.apt:
+        name: snapd
+        state: present
+        update_cache: yes
+
+    - name: Install & refresh snap core
+      community.general.snap:
+        name: core
+        state: present
+
+    - name: Remove existing certbot (apt)
+      ansible.builtin.apt:
+        name: certbot
+        state: absent
+
+    - name: Install certbot (snap)
+      community.general.snap:
+        name: certbot
+        classic: yes
+        state: present
+
+    - name: Create symlink for certbot
+      ansible.builtin.file:
+        src: /snap/bin/certbot
+        dest: /usr/bin/certbot
+        state: link
+
+    - name: Trust certbot plugin with root
+      ansible.builtin.command: snap set certbot trust-plugin-with-root=ok
+
+    - name: Install certbot-dns-cloudflare plugin
+      community.general.snap:
+        name: certbot-dns-cloudflare
+        state: present
+
+    - name: Create .secrets directory
+      ansible.builtin.file:
+        path: /root/.secrets
+        state: directory
+        mode: '0700'
+
+    - name: Create cloudflare.ini
+      ansible.builtin.copy:
+        dest: /root/.secrets/cloudflare.ini
+        content: "dns_cloudflare_api_token = cfut_EDlkU45G2FV7GBhgiG9pKK80prQQ2QJSEhnRmGva14f8e357\n"
+        mode: '0600'
+
+    - name: Generate SSL Wildcard Certificate
+      ansible.builtin.command: >
+        certbot certonly --dns-cloudflare 
+        --dns-cloudflare-credentials /root/.secrets/cloudflare.ini 
+        -d studentdumbways.my.id -d "*.studentdumbways.my.id" 
+        --non-interactive --agree-tos --register-unsafely-without-email
+      args:
+        creates: /etc/letsencrypt/live/studentdumbways.my.id/fullchain.pem

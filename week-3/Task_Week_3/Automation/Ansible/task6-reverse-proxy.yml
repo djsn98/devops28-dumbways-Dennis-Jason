@@ -1,0 +1,84 @@
+---
+- name: Task 6 - Setup Nginx Reverse Proxy
+  hosts: vm-debian12-01
+  become: yes
+  tasks:
+    - name: Install Nginx
+      ansible.builtin.apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+    - name: Create Reverse Proxy Configuration
+      ansible.builtin.copy:
+        dest: /etc/nginx/sites-available/reverse-proxy.conf
+        mode: '0644'
+        content: |
+          upstream node_exporters {
+              server 102.133.176.75:9100;
+              server 40.123.241.126:9100;
+          }
+
+          server {
+              listen 80;
+              listen 443 ssl;
+              server_name dennis.studentdumbways.my.id;
+              ssl_certificate /etc/letsencrypt/live/studentdumbways.my.id/fullchain.pem;
+              ssl_certificate_key /etc/letsencrypt/live/studentdumbways.my.id/privkey.pem;
+              location / {
+                  proxy_pass http://4.221.38.103:3000;
+                  proxy_set_header Host $host;
+              }
+          }
+
+          server {
+              listen 80;
+              listen 443 ssl;
+              server_name exporter-dennis.studentdumbways.my.id;
+              ssl_certificate /etc/letsencrypt/live/studentdumbways.my.id/fullchain.pem;
+              ssl_certificate_key /etc/letsencrypt/live/studentdumbways.my.id/privkey.pem;
+              location / {
+                  proxy_pass http://node_exporters;
+                  proxy_set_header Host $host;
+              }
+          }
+
+          server {
+              listen 80;
+              listen 443 ssl;
+              server_name prom-dennis.studentdumbways.my.id;
+              ssl_certificate /etc/letsencrypt/live/studentdumbways.my.id/fullchain.pem;
+              ssl_certificate_key /etc/letsencrypt/live/studentdumbways.my.id/privkey.pem;
+              location / {
+                  proxy_pass http://4.221.38.103:9090;
+                  proxy_set_header Host $host;
+              }
+          }
+
+          server {
+              listen 80;
+              listen 443 ssl;
+              server_name monitoring-dennis.studentdumbways.my.id;
+              ssl_certificate /etc/letsencrypt/live/studentdumbways.my.id/fullchain.pem;
+              ssl_certificate_key /etc/letsencrypt/live/studentdumbways.my.id/privkey.pem;
+              location / {
+                  proxy_pass http://4.221.38.103:3001;
+                  proxy_set_header Host $host;
+              }
+          }
+
+    - name: Enable Reverse Proxy Configuration
+      ansible.builtin.file:
+        src: /etc/nginx/sites-available/reverse-proxy.conf
+        dest: /etc/nginx/sites-enabled/reverse-proxy.conf
+        state: link
+
+    - name: Remove default Nginx config
+      ansible.builtin.file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+
+    - name: Reload Nginx
+      ansible.builtin.service:
+        name: nginx
+        state: reloaded

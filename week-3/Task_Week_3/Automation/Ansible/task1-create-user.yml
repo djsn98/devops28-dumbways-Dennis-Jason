@@ -1,0 +1,12 @@
+---
+- name: Task 1 - Membuat User dan Konfigurasi Sudo
+  hosts: all
+  become: yes
+  tasks:
+    - name: Membuat user djsn98 dengan password
+      ansible.builtin.user:
+        name: djsn98
+        password: "{{ 'djsn98' | password_hash('sha512') }}"
+        shell: /bin/bash
+        groups: sudo
+        append: yes

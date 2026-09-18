@@ -1,0 +1,60 @@
+---
+- name: Task 4 - Setup Monitoring (Docker)
+  hosts: all
+  become: yes
+  tasks:
+    - name: Run Node Exporter on Ubuntu
+      community.docker.docker_container:
+        name: node_exporter
+        image: prom/node-exporter:latest
+        state: started
+        restart_policy: always
+        network_mode: host
+        pid_mode: host
+        volumes:
+          - '/:/host:ro,rslave'
+      when: inventory_hostname in groups['ubuntu']
+
+    - name: Create Prometheus config directory on Debian
+      ansible.builtin.file:
+        path: /opt/prometheus
+        state: directory
+        mode: '0755'
+      when: inventory_hostname in groups['debian']
+
+    - name: Create prometheus.yml
+      ansible.builtin.copy:
+        dest: /opt/prometheus/prometheus.yml
+        content: |
+          global:
+            scrape_interval: 15s
+          scrape_configs:
+            - job_name: 'node_exporter'
+              static_configs:
+                - targets: 
+                  - '102.133.176.75:9100'
+                  - '40.123.241.126:9100'
+        mode: '0644'
+      when: inventory_hostname in groups['debian']
+
+    - name: Run Prometheus on Debian
+      community.docker.docker_container:
+        name: prometheus
+        image: prom/prometheus:latest
+        state: started
+        restart_policy: always
+        ports:
+          - "9090:9090"
+        volumes:
+          - /opt/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      when: inventory_hostname in groups['debian']
+
+    - name: Run Grafana on Debian (Port 3001)
+      community.docker.docker_container:
+        name: grafana
+        image: grafana/grafana:latest
+        state: started
+        restart_policy: always
+        ports:
+          - "3001:3000" 
+      when: inventory_hostname in groups['debian']

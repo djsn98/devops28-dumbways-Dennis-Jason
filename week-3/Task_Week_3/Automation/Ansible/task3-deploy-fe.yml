@@ -1,0 +1,94 @@
+---
+- name: Task 3 - Deploy Aplikasi Node.js
+  hosts: vm-debian12-01
+  become: no 
+  tasks:
+    - name: Install Git (Membutuhkan sudo)
+      ansible.builtin.apt:
+        name: git
+        state: present
+        update_cache: yes
+      become: yes
+
+    - name: Clone repository wayshub-frontend
+      ansible.builtin.git:
+        repo: 'https://github.com/djsn98/wayshub-frontend.git'
+        dest: ~/wayshub-frontend
+        version: HEAD
+        force: yes
+
+    - name: Install NVM
+      ansible.builtin.shell: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+      args:
+        creates: ~/.nvm/nvm.sh
+
+    - name: Install Node.js v14
+      ansible.builtin.shell: |
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        nvm install 14
+        nvm use 14
+        nvm alias default 14
+      args:
+        executable: /bin/bash
+    
+    - name: Menjalankan npm install
+      ansible.builtin.shell: |
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        npm install
+      args:
+        chdir: ~/wayshub-frontend
+        executable: /bin/bash
+
+    - name: Install PM2 secara global
+      ansible.builtin.shell: |
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        npm install -g pm2
+      args:
+        executable: /bin/bash
+
+    - name: Menjalankan pm2 init
+      ansible.builtin.shell: |
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        pm2 init
+      args:
+        chdir: ~/wayshub-frontend
+        executable: /bin/bash
+        creates: ~/wayshub-frontend/ecosystem.config.js
+
+    - name: Mengedit file ecosystem.config.js
+      ansible.builtin.copy:
+        dest: ~/wayshub-frontend/ecosystem.config.js
+        content: |
+          module.exports = {
+            apps : [{
+              script: 'npm start',
+              watch: '.'
+            }],
+
+            deploy : {
+              production : {
+                user : 'SSH_USERNAME',
+                host : 'SSH_HOSTMACHINE',
+                ref  : 'origin/master',
+                repo : 'GIT_REPOSITORY',
+                path : 'DESTINATION_PATH',
+                'pre-deploy-local': '',
+                'post-deploy' : 'npm install && pm2 reload ecosystem.config.js --env production',
+                'pre-setup': ''
+              }
+            }
+          };
+        mode: '0644'
+
+    - name: Start aplikasi menggunakan PM2
+      ansible.builtin.shell: |
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        pm2 startOrReload ecosystem.config.js || pm2 start
+      args:
+        chdir: ~/wayshub-frontend
+        executable: /bin/bash
