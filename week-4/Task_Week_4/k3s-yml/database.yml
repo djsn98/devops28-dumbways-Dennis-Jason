@@ -1,0 +1,74 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wayshub-env-config
+data:
+  MYSQL_USER: student
+  MYSQL_DATABASE: wayshub 
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: wayshub-env-secret
+stringData:
+  MYSQL_ROOT_PASSWORD: rootroot
+  MYSQL_PASSWORD: studentstudent
+
+
+---
+## UNDER IN CONTRUCT
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: wayshub-volume
+spec:
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 5Gi
+  hostPath:
+    path: /data/location
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: wayshub-db
+  labels:
+    name: wayshub-db
+spec:
+  serviceName: ISI-DENGAN-SVC-CLUSTER-IP
+  replicas: 1
+  selector:
+    matchLabels:
+      name: nodejs-stateful
+  volumeClaimTemplates:
+    - metadata:
+        name: nodejs-stateful-volume-claim
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        volumeMode: Filesystem
+        resources:
+          requests:
+            storage: 1Gi
+  template:
+    metadata:
+      name: nodejs-stateful
+      labels:
+        name: nodejs-stateful
+    spec:
+      containers:
+        - name: nodejs-stateful
+          image: khannedy/nodejs-stateful
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          volumeMounts:
+            - mountPath: /app/data
+              name: nodejs-stateful-volume-claim
