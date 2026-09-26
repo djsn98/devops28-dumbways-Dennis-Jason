@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wayshub-fe
+  labels:
+    name: wayshub-fe
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: frontend
+  template:
+    metadata:
+      name: wayshub-fe
+      labels:
+        name: frontend
+    spec:
+      containers:
+        - name: wayshub-fe
+          image: djsn98/wayshub-fe:prodv2
+          ports:
+            - containerPort: 3000
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: wayshub-fe-service
+spec:
+  selector:
+    name: frontend
+  ports:
+    - port: 3000
+      targetPort: 3000

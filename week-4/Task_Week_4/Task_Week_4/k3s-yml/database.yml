@@ -18,11 +18,11 @@ stringData:
 
 
 ---
-## UNDER IN CONTRUCT
+
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: wayshub-volume
+  name: wayshub-db-volume
 spec:
   accessModes:
     - ReadWriteOnce
@@ -40,35 +40,51 @@ metadata:
   labels:
     name: wayshub-db
 spec:
-  serviceName: ISI-DENGAN-SVC-CLUSTER-IP
+  serviceName: wayshub-db-service
   replicas: 1
   selector:
     matchLabels:
-      name: nodejs-stateful
+      name: database
   volumeClaimTemplates:
     - metadata:
-        name: nodejs-stateful-volume-claim
+        name:  wayshub-db-volume-claim
       spec:
         accessModes:
           - ReadWriteOnce
         volumeMode: Filesystem
         resources:
           requests:
-            storage: 1Gi
+            storage: 3Gi
   template:
     metadata:
-      name: nodejs-stateful
+      name: wayshub-db
       labels:
-        name: nodejs-stateful
+        name: database
     spec:
       containers:
-        - name: nodejs-stateful
-          image: khannedy/nodejs-stateful
-          env:
-            - name: POD_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
+        - name: wayshub-db
+          image: mysql:8.0
+          ports:
+            - containerPort: 3306
+          envFrom:
+            - configMapRef:
+                name: wayshub-env-config
+            - secretRef:
+                name: wayshub-env-secret
+          
           volumeMounts:
-            - mountPath: /app/data
-              name: nodejs-stateful-volume-claim
+            - mountPath: /var/lib/mysql
+              name: wayshub-db-volume-claim
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: wayshub-db-service
+spec:
+  selector:
+    name: database
+  ports:
+    - port: 3306
+      targetPort: 3306

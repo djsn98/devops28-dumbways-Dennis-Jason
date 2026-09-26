@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wayshub-be
+  labels:
+    name: wayshub-be
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: backend
+  template:
+    metadata:
+      name: wayshub-be
+      labels:
+        name: backend
+    spec:
+      containers:
+        - name: wayshub-be
+          image: djsn98/wayshub-be:prodv2
+          ports:
+            - containerPort: 5000
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: wayshub-be-service
+spec:
+  selector:
+    name: backend
+  ports:
+    - port: 5000
+      targetPort: 5000
