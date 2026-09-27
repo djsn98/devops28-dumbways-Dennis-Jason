@@ -72,55 +72,38 @@ ingress-nginx-controller menerima IP eksternal dari ServiceLB bawaan K3s
 
 ## 3. Deploy aplikasi yang kalian gunakan ke dalam kubernetes cluster yang telah kalian buat di point nomer 1.
 
-> STEP 1 : Buat file yaml yang berisi statefulset dan service cluster ip untuk deploy
-> 
-> database
-
+STEP 1 : Buat file yaml yang berisi statefulset dan service cluster ip untuk deploy database
 ![](./images/image34.png)
-
 ![](./images/image33.png)
 
 STEP 2 : Apply file yaml database ke dalam K3S
-
 ![](./images/image28.png)
 
 STEP 3 : Buat file yaml yang berisi deployment dan service untuk backend
+![](./images/image30.png)
+![](./images/image36.png)
 
-> ![](./images/image30.png)
-> 
-> ![](./images/image36.png)
-> 
-> STEP 4 : Apply file yaml backend ke dalam K3S
-> 
-> ![](./images/image26.png)
-> 
-> STEP 5 : Buat file yaml yang berisi deployment dan service untuk deploy frontend
-> 
-> ![](./images/image31.png)
-> 
-> STEP 6 : Apply file yaml frontend ke dalam K3S
-> 
-> ![](./images/image37.png)
-> 
-> STEP 7 : Buat file yaml yang berisi ingress untuk mengakses fe dan be dengan
-> 
-> domain
-> 
-> ![](./images/image23.png)
-> 
-> STEP 8 : Apply file yaml Ingress ke dalam K3S
-> 
-> ![](./images/image35.png)
-> 
-> STEP 7 : Cek di cluster K3S apakah semua object sudah terbuat dan berjalan
-> 
-> ![](./images/image2.png)
+STEP 4 : Apply file yaml backend ke dalam K3S
+![](./images/image26.png)
+
+STEP 5 : Buat file yaml yang berisi deployment dan service untuk deploy frontend
+![](./images/image31.png)
+
+STEP 6 : Apply file yaml frontend ke dalam K3S
+![](./images/image37.png)
+
+STEP 7 : Buat file yaml yang berisi ingress untuk mengakses fe dan be dengan domain
+![](./images/image23.png)
+
+STEP 8 : Apply file yaml Ingress ke dalam K3S
+![](./images/image35.png)
+
+ STEP 9 : Cek di cluster K3S apakah semua object sudah terbuat dan berjalan![](./images/image2.png)
 
 ![](./images/image10.png)
 
-STEP 8 : Cek di browser apakah aplikasi sudah berjalan
-
-> ![](./images/image9.png)
+STEP 10 : Cek di browser apakah aplikasi sudah berjalan
+![](./images/image9.png)
 
 ![](./images/image6.png)
 
