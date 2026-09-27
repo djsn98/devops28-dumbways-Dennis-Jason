@@ -1,5 +1,7 @@
 # Task Week 4
 
+LINK REPORT VIDEO :  https://drive.google.com/file/d/1e8QHJPJACJR4Q-ZmRl7FZe8Q8wVGRODy/view?usp=sharing
+
 ## 1. Buatlah sebuah kubernetes cluster, yang di dalamnya terdapat 3 buah node as a master and worker.
 
 STEP 1 : Siapkan 3 buah vm
@@ -71,7 +73,7 @@ ingress-nginx-controller menerima IP eksternal dari ServiceLB bawaan K3s
 ## 3. Deploy aplikasi yang kalian gunakan ke dalam kubernetes cluster yang telah kalian buat di point nomer 1.
 
 > STEP 1 : Buat file yaml yang berisi statefulset dan service cluster ip untuk deploy
->
+> 
 > database
 
 ![](./images/image34.png)
