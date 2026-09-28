@@ -104,13 +104,13 @@ LINK REPORT VIDEO : https://drive.google.com/file/d/1e8QHJPJACJR4Q-ZmRl7FZe8Q8wV
 
 ![Apply file yaml Ingress](images/image-25.png)
 
-**STEP 7 :** Cek di cluster K3S apakah semua object sudah terbuat dan berjalan
+**STEP 9 :** Cek di cluster K3S apakah semua object sudah terbuat dan berjalan
 
 ![Pengecekan object di cluster K3S (bagian 1)](images/image-26.png)
 
 ![Pengecekan object di cluster K3S (bagian 2)](images/image-27.png)
 
-**STEP 8 :** Cek di browser apakah aplikasi sudah berjalan
+**STEP 10 :** Cek di browser apakah aplikasi sudah berjalan
 
 ![Aplikasi berjalan di browser (bagian 1)](images/image-28.png)
 
